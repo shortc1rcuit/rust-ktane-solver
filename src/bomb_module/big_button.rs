@@ -1,7 +1,7 @@
-use crate::module::Solvable;
+use crate::bomb_module::Solvable;
 use eframe::egui::{self, Ui};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Colour {
     Blue,
     Red,

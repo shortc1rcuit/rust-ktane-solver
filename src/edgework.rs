@@ -30,11 +30,13 @@ pub enum Label {
     TRN,
 }
 
+#[allow(clippy::upper_case_acronyms)]
+#[derive(Debug, PartialEq)]
 pub enum Ports {
     DVI,
     Parallel,
     PS2,
+    RCA,
     RJ45,
     Serial,
-    RCA,
 }

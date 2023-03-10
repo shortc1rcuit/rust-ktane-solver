@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use bomb_module::{big_button::BigButton, wrong::Wrong, Module, Solvable};
-use edgework::{Edgework, Indicator, Label};
+use edgework::{Edgework, Indicator, Label, Ports};
 use eframe::egui;
 
 mod bomb_module;
@@ -43,11 +43,6 @@ impl SolverApp<'_> {
             },
             Box::<BigButton>::default(),
         );
-
-        bomb.edgework.indicators.push(Indicator {
-            label: Label::BOB,
-            lit: true,
-        });
 
         bomb
     }
@@ -105,9 +100,54 @@ impl eframe::App for SolverApp<'_> {
                     if ui.button("+").clicked() {
                         edgework.indicators.push(Indicator::default());
                     }
-                    
+
                     if !edgework.indicators.is_empty() && ui.button("-").clicked() {
                         edgework.indicators.pop();
+                    }
+                });
+            });
+
+            ui.collapsing("Ports", |ui| {
+                for (plate_index, plate) in edgework.ports.iter_mut().enumerate() {
+                    ui.collapsing(format!("Plate #{}", plate_index + 1), |ui| {
+                        for (port_index, port) in plate.iter_mut().enumerate() {
+                            ui.horizontal(|ui| {
+                                egui::ComboBox::from_id_source(format!(
+                                    "Port {}-{}",
+                                    plate_index, port_index
+                                ))
+                                .selected_text(format!("{:?}", port))
+                                .show_ui(ui, |ui| {
+                                    ui.style_mut().wrap = Some(false);
+                                    ui.selectable_value(port, Ports::DVI, "DVI");
+                                    ui.selectable_value(port, Ports::Parallel, "Parallel");
+                                    ui.selectable_value(port, Ports::PS2, "PS2");
+                                    ui.selectable_value(port, Ports::RCA, "RCA");
+                                    ui.selectable_value(port, Ports::RJ45, "RJ45");
+                                    ui.selectable_value(port, Ports::Serial, "Serial");
+                                });
+                            });
+                        }
+
+                        ui.horizontal(|ui| {
+                            if ui.button("+").clicked() {
+                                plate.push(Ports::DVI);
+                            }
+
+                            if !plate.is_empty() && ui.button("-").clicked() {
+                                plate.pop();
+                            }
+                        });
+                    });
+                }
+
+                ui.horizontal(|ui| {
+                    if ui.button("+").clicked() {
+                        edgework.ports.push(Vec::new());
+                    }
+
+                    if !edgework.ports.is_empty() && ui.button("-").clicked() {
+                        edgework.ports.pop();
                     }
                 });
             });

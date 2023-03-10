@@ -1,10 +1,10 @@
 #[derive(Default)]
-pub struct Edgework<'a> {
+pub struct Edgework {
     pub batteries: u32,
     pub holders: u32,
     pub indicators: Vec<Indicator>,
     pub ports: Vec<Vec<Ports>>,
-    pub serial_num: &'a str,
+    pub serial_num: String,
 }
 
 #[derive(Default)]

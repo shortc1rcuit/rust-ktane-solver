@@ -18,14 +18,14 @@ fn main() {
 }
 
 #[derive(Default)]
-struct SolverApp<'a> {
-    edgework: Edgework<'a>,
+struct SolverApp {
+    edgework: Edgework,
     modules: HashMap<Module, Box<dyn Solvable>>,
     selected_module: Option<Module>,
 }
 
-impl SolverApp<'_> {
-    fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+impl SolverApp {
+    fn new(_cc: &eframe::CreationContext) -> Self {
         let mut bomb = Self::default();
 
         bomb.modules.insert(
@@ -48,7 +48,7 @@ impl SolverApp<'_> {
     }
 }
 
-impl eframe::App for SolverApp<'_> {
+impl eframe::App for SolverApp {
     fn update(&mut self, ctx: &eframe::egui::Context, _frame: &mut eframe::Frame) {
         let Self {
             edgework,
@@ -167,6 +167,11 @@ impl eframe::App for SolverApp<'_> {
                         }
                     });
             });
+
+            ui.horizontal(|ui| {
+                ui.label("Serial Number");
+                ui.add(egui::TextEdit::singleline(&mut edgework.serial_num));
+            })
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {

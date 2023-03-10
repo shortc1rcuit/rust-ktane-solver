@@ -7,7 +7,7 @@ pub struct Edgework {
     pub serial_num: String,
 }
 
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct Indicator {
     pub label: Label,
     pub lit: bool,
@@ -39,4 +39,15 @@ pub enum Ports {
     RCA,
     RJ45,
     Serial,
+}
+
+impl Edgework {
+    pub fn label_exists(&self, label: Label) -> bool {
+        self.indicators.iter().any(|ind| ind.label == label)
+    }
+
+    pub fn indicator_exists(&self, label: Label, lit: bool) -> bool {
+        let indicator = Indicator{label, lit};
+        self.indicators.contains(&indicator)
+    }
 }

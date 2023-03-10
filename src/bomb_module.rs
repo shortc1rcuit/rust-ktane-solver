@@ -2,6 +2,8 @@ use std::fmt::Display;
 
 use eframe::egui::Ui;
 
+use crate::edgework::Edgework;
+
 pub mod big_button;
 pub mod wrong;
 
@@ -19,5 +21,5 @@ impl Display for Module {
 }
 
 pub trait Solvable {
-    fn solve(&mut self, ui: &mut Ui);
+    fn solve(&mut self, ui: &mut Ui, edgework: &Edgework);
 }

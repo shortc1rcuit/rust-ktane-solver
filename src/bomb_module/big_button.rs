@@ -1,4 +1,4 @@
-use crate::bomb_module::Solvable;
+use crate::{bomb_module::Solvable, edgework::*};
 use eframe::egui::{self, Ui};
 
 #[derive(Debug, PartialEq, Eq)]
@@ -10,7 +10,7 @@ pub enum Colour {
 }
 
 #[derive(Debug, PartialEq)]
-enum Label {
+enum ButtonLabel {
     Abort,
     Detonate,
     Hold,
@@ -25,10 +25,7 @@ enum Instruction {
 
 pub struct BigButton {
     colour: Colour,
-    label: Label,
-    batteries: u32,
-    car: bool,
-    lit_frk: bool,
+    label: ButtonLabel,
     result1: Option<Instruction>,
     led: Colour,
     result2: Option<u8>,
@@ -38,10 +35,7 @@ impl Default for BigButton {
     fn default() -> Self {
         Self {
             colour: Colour::Blue,
-            label: Label::Abort,
-            batteries: 0,
-            car: false,
-            lit_frk: false,
+            label: ButtonLabel::Abort,
             result1: None,
             led: Colour::Blue,
             result2: None,
@@ -50,7 +44,7 @@ impl Default for BigButton {
 }
 
 impl Solvable for BigButton {
-    fn solve(&mut self, ui: &mut Ui) {
+    fn solve(&mut self, ui: &mut Ui, edgework: &Edgework) {
         ui.horizontal(|ui| {
             ui.label("Button Colour");
 
@@ -70,40 +64,25 @@ impl Solvable for BigButton {
             egui::ComboBox::from_id_source("Button Label")
                 .selected_text(format!("{:?}", self.label))
                 .show_ui(ui, |ui| {
-                    ui.selectable_value(&mut self.label, Label::Abort, "Abort");
-                    ui.selectable_value(&mut self.label, Label::Detonate, "Detonate");
-                    ui.selectable_value(&mut self.label, Label::Hold, "Hold");
-                    ui.selectable_value(&mut self.label, Label::Press, "Press");
+                    ui.selectable_value(&mut self.label, ButtonLabel::Abort, "Abort");
+                    ui.selectable_value(&mut self.label, ButtonLabel::Detonate, "Detonate");
+                    ui.selectable_value(&mut self.label, ButtonLabel::Hold, "Hold");
+                    ui.selectable_value(&mut self.label, ButtonLabel::Press, "Press");
                 });
         });
 
-        ui.horizontal(|ui| {
-            ui.label("Batteries");
-            ui.add(egui::DragValue::new(&mut self.batteries).speed(0.1));
-        });
-
-        ui.horizontal(|ui| {
-            ui.label("CAR");
-            ui.checkbox(&mut self.car, "");
-        });
-
-        ui.horizontal(|ui| {
-            ui.label("Lit FRK");
-            ui.checkbox(&mut self.lit_frk, "");
-        });
-
         if ui.button("Solve").clicked() {
-            if (self.colour == Colour::Blue) && (self.label == Label::Abort) {
+            if (self.colour == Colour::Blue) && (self.label == ButtonLabel::Abort) {
                 self.result1 = Some(Instruction::Hold);
-            } else if (self.batteries > 1) && (self.label == Label::Detonate) {
+            } else if (edgework.batteries > 1) && (self.label == ButtonLabel::Detonate) {
                 self.result1 = Some(Instruction::Tap);
-            } else if (self.colour == Colour::White) && (self.car) {
+            } else if (self.colour == Colour::White) && (edgework.label_exists(Label::CAR)) {
                 self.result1 = Some(Instruction::Hold);
-            } else if (self.batteries > 2) && (self.lit_frk) {
+            } else if (edgework.batteries > 2) && (edgework.indicator_exists(Label::FRK, true)) {
                 self.result1 = Some(Instruction::Tap);
             } else if self.colour == Colour::Yellow {
                 self.result1 = Some(Instruction::Hold);
-            } else if (self.colour == Colour::Red) && (self.label == Label::Hold) {
+            } else if (self.colour == Colour::Red) && (self.label == ButtonLabel::Hold) {
                 self.result1 = Some(Instruction::Tap);
             } else {
                 self.result1 = Some(Instruction::Hold);

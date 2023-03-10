@@ -153,6 +153,11 @@ impl eframe::App for SolverApp {
             });
 
             ui.horizontal(|ui| {
+                ui.label("Serial Number");
+                ui.add(egui::TextEdit::singleline(&mut edgework.serial_num));
+            });
+
+            ui.horizontal(|ui| {
                 ui.label("Module");
                 egui::ComboBox::from_id_source("Current Module")
                     .selected_text(module_name)
@@ -167,11 +172,6 @@ impl eframe::App for SolverApp {
                         }
                     });
             });
-
-            ui.horizontal(|ui| {
-                ui.label("Serial Number");
-                ui.add(egui::TextEdit::singleline(&mut edgework.serial_num));
-            })
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
@@ -179,7 +179,7 @@ impl eframe::App for SolverApp {
                 modules
                     .entry(module.clone())
                     .or_insert_with(|| Box::<Wrong>::default())
-                    .solve(ui);
+                    .solve(ui, edgework);
             }
         });
     }

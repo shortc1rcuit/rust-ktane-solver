@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 
-use bomb_module::{big_button::BigButton, wrong::Wrong, Module, Solvable};
+use bomb_module::{Module, Solvable};
 use edgework::{Edgework, Indicator, Label, Ports};
 use eframe::egui;
+use solvers::{string_to_solver, wrong::Wrong};
 
 mod bomb_module;
 mod edgework;
+mod solvers;
 
 fn main() {
     let native_options = eframe::NativeOptions::default();
@@ -21,30 +23,13 @@ fn main() {
 struct SolverApp {
     edgework: Edgework,
     modules: HashMap<Module, Box<dyn Solvable>>,
+    added_module: String,
     selected_module: Option<Module>,
 }
 
 impl SolverApp {
     fn new(_cc: &eframe::CreationContext) -> Self {
-        let mut bomb = Self::default();
-
-        bomb.modules.insert(
-            Module {
-                id: "The Button".to_string(),
-                index: 0,
-            },
-            Box::<BigButton>::default(),
-        );
-
-        bomb.modules.insert(
-            Module {
-                id: "The Button".to_string(),
-                index: 1,
-            },
-            Box::<BigButton>::default(),
-        );
-
-        bomb
+        Self::default()
     }
 }
 
@@ -53,6 +38,7 @@ impl eframe::App for SolverApp {
         let Self {
             edgework,
             modules,
+            added_module,
             selected_module,
         } = self;
 
@@ -154,7 +140,27 @@ impl eframe::App for SolverApp {
 
             ui.horizontal(|ui| {
                 ui.label("Serial Number");
-                ui.add(egui::TextEdit::singleline(&mut edgework.serial_num));
+                ui.add(egui::TextEdit::singleline(&mut edgework.serial_num).desired_width(60.0));
+            });
+
+            ui.horizontal(|ui| {
+                ui.label("Add Module");
+                ui.add(egui::TextEdit::singleline(added_module).desired_width(120.0));
+
+                if ui.button("Add").clicked() {
+                    if let Some(solver) = string_to_solver(added_module) {
+                        let same_type = modules
+                            .keys()
+                            .filter(|module| module.id == *added_module)
+                            .count();
+                        let module = Module {
+                            id: added_module.to_string(),
+                            index: same_type,
+                        };
+
+                        modules.insert(module, solver);
+                    }
+                }
             });
 
             ui.horizontal(|ui| {

@@ -4,14 +4,11 @@ use eframe::egui::Ui;
 
 use crate::edgework::Edgework;
 
-pub mod big_button;
-pub mod wrong;
-
 #[derive(PartialEq, Eq, Hash, Clone, Debug)]
 pub struct Module {
     pub id: String,
     //There may be multiple modules of the same type so we need some way of differentiating them
-    pub index: u32,
+    pub index: usize,
 }
 
 impl Display for Module {

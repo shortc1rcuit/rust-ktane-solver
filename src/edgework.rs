@@ -47,7 +47,7 @@ impl Edgework {
     }
 
     pub fn indicator_exists(&self, label: Label, lit: bool) -> bool {
-        let indicator = Indicator{label, lit};
+        let indicator = Indicator { label, lit };
         self.indicators.contains(&indicator)
     }
 }

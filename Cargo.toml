@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 eframe = "0.21.3"
+image = {version = "0.24.5", default-features = false, features = ["png"]}

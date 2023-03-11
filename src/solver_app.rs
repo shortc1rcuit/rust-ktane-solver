@@ -27,7 +27,7 @@ impl SolverApp {
 
         get_batteries(&mut edgework.batteries, ui);
         get_holders(&mut edgework.holders, ui);
-        
+
         get_indicators(&mut edgework.indicators, ui);
 
         get_ports(&mut edgework.ports, ui);

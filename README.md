@@ -7,5 +7,5 @@ I will hopefully add more modules in the future.
 
 To use, first [install rust](https://www.rust-lang.org/tools/install) and then run:
 ```console
-$ cargo run
+$ cargo run --release
 ```

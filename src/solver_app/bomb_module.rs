@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use eframe::egui::Ui;
 
-use crate::edgework::Edgework;
+use super::edgework::Edgework;
 
 #[derive(PartialEq, Eq, Hash, Clone, Debug)]
 pub struct Module {

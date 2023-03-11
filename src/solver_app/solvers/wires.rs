@@ -1,4 +1,4 @@
-use crate::{bomb_module::Solvable, edgework::*};
+use crate::solver_app::{bomb_module::Solvable, edgework::*};
 use eframe::egui::{self, Ui};
 
 #[derive(Clone, Debug, PartialEq)]

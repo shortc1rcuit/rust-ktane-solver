@@ -1,4 +1,4 @@
-use crate::{bomb_module::Solvable, edgework::Edgework};
+use crate::solver_app::{bomb_module::Solvable, edgework::Edgework};
 use eframe::egui::Ui;
 
 //Used to tell me if something has gone wrong

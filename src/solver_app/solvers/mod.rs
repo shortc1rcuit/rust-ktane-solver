@@ -2,7 +2,7 @@ mod big_button;
 mod wires;
 pub mod wrong;
 
-use crate::bomb_module::Solvable;
+use super::bomb_module::Solvable;
 
 pub fn string_to_solver(name: &str) -> Option<Box<dyn Solvable>> {
     match name {

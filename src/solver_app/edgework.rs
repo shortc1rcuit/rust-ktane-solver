@@ -3,7 +3,7 @@ pub struct Edgework {
     pub batteries: u32,
     pub holders: u32,
     pub indicators: Vec<Indicator>,
-    pub ports: Vec<Vec<Ports>>,
+    pub ports: Vec<Vec<Port>>,
     pub serial_num: String,
 }
 
@@ -32,7 +32,7 @@ pub enum Label {
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, PartialEq)]
-pub enum Ports {
+pub enum Port {
     DVI,
     Parallel,
     PS2,

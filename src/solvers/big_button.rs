@@ -2,7 +2,7 @@ use crate::{bomb_module::Solvable, edgework::*};
 use eframe::egui::{self, Ui};
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum Colour {
+enum Colour {
     Blue,
     Red,
     White,

@@ -50,4 +50,9 @@ impl Edgework {
         let indicator = Indicator { label, lit };
         self.indicators.contains(&indicator)
     }
+
+    pub fn last_digit_serial(&self) -> u32 {
+        let last = self.serial_num.chars().nth(5).unwrap();
+        last.to_digit(10).unwrap()
+    }
 }

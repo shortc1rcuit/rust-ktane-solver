@@ -143,6 +143,8 @@ impl eframe::App for SolverApp {
                 ui.add(egui::TextEdit::singleline(&mut edgework.serial_num).desired_width(60.0));
             });
 
+            ui.add_space(10.0);
+
             ui.horizontal(|ui| {
                 ui.label("Add Module");
                 ui.add(egui::TextEdit::singleline(added_module).desired_width(120.0));
@@ -164,7 +166,7 @@ impl eframe::App for SolverApp {
             });
 
             ui.horizontal(|ui| {
-                ui.label("Module");
+                ui.label("Modules");
                 egui::ComboBox::from_id_source("Current Module")
                     .selected_text(module_name)
                     .show_ui(ui, |ui| {

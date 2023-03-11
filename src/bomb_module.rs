@@ -17,6 +17,24 @@ impl Display for Module {
     }
 }
 
+impl PartialOrd for Module {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match self.id.partial_cmp(&other.id) {
+            Some(core::cmp::Ordering::Equal) => self.index.partial_cmp(&other.index),
+            ord => ord,
+        }
+    }
+}
+
+impl Ord for Module {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match self.id.cmp(&other.id) {
+            std::cmp::Ordering::Equal => self.index.cmp(&other.index),
+            ord => ord,
+        }
+    }
+}
+
 pub trait Solvable {
     fn solve(&mut self, ui: &mut Ui, edgework: &Edgework);
 }

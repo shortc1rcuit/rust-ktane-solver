@@ -169,7 +169,11 @@ impl eframe::App for SolverApp {
                     .selected_text(module_name)
                     .show_ui(ui, |ui| {
                         ui.style_mut().wrap = Some(false);
-                        for module in modules.keys() {
+
+                        let mut keys = modules.keys().collect::<Vec<_>>();
+                        keys.sort();
+
+                        for module in keys {
                             ui.selectable_value(
                                 selected_module,
                                 Some(module.clone()),

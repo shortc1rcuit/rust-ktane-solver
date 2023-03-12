@@ -38,3 +38,8 @@ impl Ord for Module {
 pub trait Solvable {
     fn solve(&mut self, ui: &mut Ui, edgework: &Edgework);
 }
+
+pub struct ModuleInfo {
+    pub solver: Box<dyn Solvable>,
+    pub solved: bool,
+}

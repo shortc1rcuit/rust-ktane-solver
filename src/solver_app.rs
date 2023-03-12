@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 
-use bomb_module::{Module, Solvable};
+use bomb_module::Module;
 use edgework::{Edgework, Indicator, Label, Port};
 use eframe::egui::{self, Ui};
 use solvers::{string_to_solver, wrong::Wrong};
+
+use self::bomb_module::ModuleInfo;
 
 mod bomb_module;
 mod edgework;
@@ -12,7 +14,7 @@ mod solvers;
 #[derive(Default)]
 pub struct SolverApp {
     edgework: Edgework,
-    modules: HashMap<Module, Box<dyn Solvable>>,
+    modules: HashMap<Module, ModuleInfo>,
     added_module: String,
     selected_module: Option<Module>,
 }
@@ -24,6 +26,8 @@ impl SolverApp {
 
     fn get_edgework(&mut self, ui: &mut Ui) {
         let edgework = &mut self.edgework;
+
+        ui.heading("Edgework");
 
         get_batteries(&mut edgework.batteries, ui);
         get_holders(&mut edgework.holders, ui);
@@ -40,6 +44,8 @@ impl SolverApp {
         let added_module = &mut self.added_module;
         let modules = &mut self.modules;
 
+        ui.heading("Modules");
+
         let module_name = match selected_module.clone() {
             None => "".to_string(),
             Some(x) => format!("{}", x),
@@ -55,12 +61,18 @@ impl SolverApp {
                         .keys()
                         .filter(|module| module.id == *added_module)
                         .count();
+
                     let module = Module {
                         id: added_module.to_string(),
                         index: same_type,
                     };
 
-                    modules.insert(module, solver);
+                    let info = ModuleInfo {
+                        solver,
+                        solved: false,
+                    };
+
+                    modules.insert(module, info);
                 }
             }
         });
@@ -72,10 +84,14 @@ impl SolverApp {
                 .show_ui(ui, |ui| {
                     ui.style_mut().wrap = Some(false);
 
-                    let mut keys = modules.keys().collect::<Vec<_>>();
-                    keys.sort();
+                    let mut unsolved = modules
+                        .iter()
+                        .filter(|(_, x)| !x.solved)
+                        .map(|(x, _)| x)
+                        .collect::<Vec<_>>();
+                    unsolved.sort();
 
-                    for module in keys {
+                    for module in unsolved {
                         ui.selectable_value(
                             selected_module,
                             Some(module.clone()),
@@ -94,8 +110,31 @@ impl SolverApp {
         if let Some(module) = selected_module {
             modules
                 .entry(module.clone())
-                .or_insert_with(|| Box::<Wrong>::default())
+                .or_insert_with(|| ModuleInfo {
+                    solver: Box::<Wrong>::default(),
+                    solved: false,
+                })
+                .solver
                 .solve(ui, edgework);
+        }
+    }
+
+    fn module_result(&mut self, ui: &mut Ui) {
+        let selected_module = &mut self.selected_module;
+        let modules = &mut self.modules;
+
+        if let Some(module) = selected_module {
+            if ui.button("Solved").clicked() {
+                modules
+                    .entry(module.clone())
+                    .or_insert_with(|| ModuleInfo {
+                        solver: Box::<Wrong>::default(),
+                        solved: false,
+                    })
+                    .solved = true;
+
+                *selected_module = None;
+            }
         }
     }
 }
@@ -217,6 +256,10 @@ impl eframe::App for SolverApp {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             self.show_module(ui);
+
+            ui.add_space(20.0);
+
+            self.module_result(ui);
         });
     }
 }
